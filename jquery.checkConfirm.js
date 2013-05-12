@@ -3,9 +3,9 @@
     var checkLength, match, settings, that, validateFail, validatePass;
 
     settings = {
-      match: options.match || '#' + $(this).parents('.control-group').next().find('input')[0].id,
+      match: (arguments.length === 1 ? options : options.match || '#' + $(this).parents('.control-group').next().find('input')[0].id),
       match_text: options.match_text || 'Passwords do not match',
-      length: options.length || 8,
+      length: (arguments.length === 1 ? 8 : options.length || 8),
       length_text: options.length_text || 'Password length is too short',
       parent: options.parent || $(this).parent()
     };

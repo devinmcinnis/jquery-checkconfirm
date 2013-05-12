@@ -5,9 +5,9 @@ $.fn.checkConfirm = (options) ->
   settings =
 
     # Match custom setting or next input in form based on Bootstrap markup
-    match:        options.match       or '#' + $(this).parents('.control-group').next().find('input')[0].id
+    match:        (if arguments.length is 1 then options else options.match or '#' + $(this).parents('.control-group').next().find('input')[0].id)
     match_text:   options.match_text  or 'Passwords do not match'
-    length:       options.length      or 8
+    length:       (if arguments.length is 1 then 8 else options.length or 8)
     length_text:  options.length_text or 'Password length is too short'
     parent:       options.parent      or $(this).parent()
 
