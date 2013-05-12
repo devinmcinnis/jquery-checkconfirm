@@ -1,6 +1,7 @@
-jQuery(function($) {
-  return $.fn.checkConfirm = function(options) {
+(function() {
+  $.fn.checkConfirm = function(options) {
     var checkLength, match, settings, that, validateFail, validatePass;
+
     settings = {
       match: options.match || '#' + $(this).parents('.control-group').next().find('input')[0].id,
       match_text: options.match_text || 'Passwords do not match',
@@ -13,6 +14,7 @@ jQuery(function($) {
     $(document).on({
       keyup: function(doc) {
         var $parent, el;
+
         el = doc.target;
         $parent = $(el).parents('.controls');
         if (that[0].id === el.id) {
@@ -31,8 +33,12 @@ jQuery(function($) {
             return validateFail(settings.match);
           }
         } else {
-          if (checkLength(el) && that[0].value === el.value) {
-            validatePass(el);
+          if (checkLength(el)) {
+            if (that[0].value === el.value) {
+              validatePass(el);
+            } else {
+              validateFail(el, settings.match_text);
+            }
           }
           if (!checkLength(el) && $parent.hasClass('validated')) {
             return validateFail(el, settings.match_text);
@@ -41,6 +47,7 @@ jQuery(function($) {
       },
       blur: function(doc) {
         var $parent, el;
+
         el = doc.target;
         $parent = $(el).parents('.controls');
         if (!checkLength(el) && !$parent.hasClass('error') && $(el)[0].value.length > 0) {
@@ -60,6 +67,7 @@ jQuery(function($) {
     };
     validatePass = function(el) {
       var $hint, $icon, $parent;
+
       $(el).data('valid', true);
       $parent = $(el).closest('.controls');
       $icon = $parent.find('i');
@@ -77,6 +85,7 @@ jQuery(function($) {
     };
     return validateFail = function(el, msg) {
       var $hint, $icon, $parent;
+
       $(el).data('valid', false);
       $parent = $(el).closest('.controls');
       $icon = $parent.find('i');
@@ -98,4 +107,5 @@ jQuery(function($) {
       }
     };
   };
-});
+
+}).call(this);
