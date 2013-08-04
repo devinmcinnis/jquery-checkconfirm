@@ -4,7 +4,8 @@ jQuery plugin made specifically to work alongside Bootstrap for password confirm
 
 ## Getting started
 
-This plugin was made to work with Bootstrap but will also work without it with a small markup adjustment.
+This plugin was made to work with Bootstrap 3 RC1 but will also work without it with a small markup adjustment.  
+To use the example, make sure to have [CoffeeScript](http://coffeescript.org) installed globally and run `make`. This will compile and watch the CoffeeScript file as you make changes but will not minify the JavaScript file.
 
 ### HTML
 
@@ -12,17 +13,13 @@ This plugin was made to work with Bootstrap but will also work without it with a
 Here is a basic form label/input setup within Bootstrap.
 
 ```
-<div class="control-group">
-  <label class="control-label" for="inputPassword">Password</label>
-  <div class="controls">
-    <input type="password" id="inputPassword" placeholder="Password">
-  </div>
+<div class="form-group">
+  <label for="inputPassword">Password</label>
+  <input type="password" class="form-control" id="inputPassword" placeholder="Password">
 </div>
-<div class="control-group">
-  <label class="control-label" for="inputPasswordConfirm">Confirm Password</label>
-  <div class="controls">
-    <input type="password" id="inputPasswordConfirm" placeholder="Confirm Password">
-  </div>
+<div class="form-group">
+  <label for="inputPasswordConfirm">Confirm Password</label>
+  <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Confirm Password">
 </div>
 ```
 
@@ -52,7 +49,7 @@ $('#inputPassword').checkConfirm({
   match_text: 'Does not match password!',
   length: 10,
   length_text: 'Does not match preferred length',
-  parent: '.controls'
+  parent: '.form-group'
 });
 ```
 
@@ -73,7 +70,7 @@ There are a few options to tamper with to give you a little customization.
       <td>match</td>
       <td>ID of confirm password input element</td>
       <td>String</td>
-      <td>$(this).parents('.control-group').next().find('input')</td>
+      <td>$(this).parents('.form-group').next().find('input')</td>
     </tr>
     <tr>
       <td>match_text</td>
@@ -101,3 +98,7 @@ There are a few options to tamper with to give you a little customization.
     </tr>
   </tbody>
 </table>
+
+## Contributing
+
+Feel free to send pull requests and please use Google's [Closure Compiler](http://closure-compiler.appspot.com/home) to minify your file.

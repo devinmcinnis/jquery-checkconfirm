@@ -1,24 +1,29 @@
 # Small jQuery plugin to extend confirm passwords
 $.fn.checkConfirm = (options) ->
 
+  # Always associate "that" with the original password input
+  that = this
+
+  # Update default parent element for Bootstrap 3 RC1
+  parentEl = '.form-group'
+
   # Custom settings with fallbacks
   settings =
 
     # Match custom setting or next input in form based on Bootstrap markup
-    match:        (if arguments.length is 1 then options else options.match or '#' + $(this).parents('.control-group').next().find('input')[0].id)
+    match:        (if (arguments.length is 1 and typeof arguments[0] is "string") then options else options.match or "#" + $(this).parents(parentEl).next().find("input")[0].id),
     match_text:   options.match_text  or 'Passwords do not match'
     length:       (if arguments.length is 1 then 8 else options.length or 8)
     length_text:  options.length_text or 'Password length is too short'
     parent:       options.parent      or $(this).parent()
-
-  # Always associate "that" with the original password input
-  that = this
+  
+  # Confirm password input
   match = $(settings.match)
 
   $(document).on
     keyup: (doc) ->
       el = doc.target
-      $parent = $(el).parents '.controls'
+      $parent = $(el).parents parentEl
 
       # If the element is the original password input
       if that[0].id is el.id
@@ -63,7 +68,7 @@ $.fn.checkConfirm = (options) ->
 
     blur: (doc) ->
       el = doc.target
-      $parent = $(el).parents '.controls'
+      $parent = $(el).parents parentEl
 
       # If the length is not long enough and the element has a value and not currently an error
       if !checkLength(el) and !$parent.hasClass('error') and $(el)[0].value.length > 0
@@ -92,18 +97,23 @@ $.fn.checkConfirm = (options) ->
     # Set inputs data to valid
     $(el).data 'valid', true
 
-    $parent = $(el).closest '.controls'
-    $icon = $parent.find 'i'
-    $hint = $parent.find '.hint'
+    $parent = $(el).closest parentEl
+    $icon = $parent.find '.glyphicon'
+    $hint = $parent.find '.help-block'
+
+    validated = $parent.hasClass('validated')
+
+    # Remove failing icon
+    if $icon.size() is 1 && !validated then $icon.remove()
 
     # If there is no icon to notify valid input, add one
-    if $icon.size() is 0 then $parent.append '<i class="icon-ok-sign"></i>'
+    if !validated then $parent.append '<span class="glyphicon glyphicon-ok"></span>'
 
     # If there was a error warning before, remove it
     $hint.remove() if $hint.size() > 0
 
     # Remove error class from parent
-    $parent.removeClass 'error'
+    $parent.removeClass 'error' if $parent.hasClass 'error'
 
     # Add validated class to parent if it was not valid before
     $parent.addClass 'validated' if !$parent.hasClass 'validated'
@@ -112,19 +122,24 @@ $.fn.checkConfirm = (options) ->
     # Set inputs data to invalid
     $(el).data 'valid', false
 
-    $parent = $(el).closest '.controls'
-    $icon = $parent.find 'i'
-    $hint = $parent.find '.hint'
+    $parent = $(el).closest parentEl
+    $icon = $parent.find '.glyphicon'
+    $hint = $parent.find '.help-block'
+
+    error = $parent.hasClass('error')
 
     # Remove valid icon and previous warnings
     $icon.remove() if $icon.size() > 0
     $hint.remove() if $hint.size() > 0
 
+    # If there is no icon to notify valid input, add one
+    if $icon.size() is 0 or !error then $parent.append '<span class="glyphicon glyphicon-remove"></span>'
+
     # Add class to parent if it wasn't already an error
     $parent.addClass 'error' if !$parent.hasClass 'error'
 
     # Append new warning if supplied with msg
-    $parent.append '<span class="hint">' + msg + '</span>' if msg
+    $parent.append '<span class="help-block">' + msg + '</span>' if msg
 
     # Remove validity of input if it was previously valid
     $parent.removeClass 'validated' if $parent.hasClass 'validated'
